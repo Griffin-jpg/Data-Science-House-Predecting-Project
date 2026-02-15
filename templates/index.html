@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>California House Price Predictor</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <canvas id="bg-canvas" aria-hidden="true"></canvas>
+<main class="app">
+    <section class="card">
+        <header class="card-header">
+            <div class="brand">🏠</div>
+            <div>
+                        <h1>California House Price</h1>
+                        <p class="muted">Quick, readable estimate from the trained model — enter values to preview a predicted price.</p>
+            </div>
+        </header>
+                <div class="layout">
+                    <form class="form left" action="/predict" method="post" aria-label="House price form">
+                        <div class="grid">
+                            <label><span>Longitude</span><input type="number" step="any" name="longitude" placeholder="-122.23" required></label>
+                            <label><span>Latitude</span><input type="number" step="any" name="latitude" placeholder="37.88" required></label>
+                            <label><span>House Age</span><input type="number" step="any" name="housing_median_age" placeholder="30" required></label>
+                            <label><span>Total Rooms</span><input type="number" step="any" name="total_rooms" placeholder="1000" required></label>
+                            <label><span>Total Bedrooms</span><input type="number" step="any" name="total_bedrooms" placeholder="200" required></label>
+                            <label><span>Population</span><input type="number" step="any" name="population" placeholder="1500" required></label>
+                            <label><span>Households</span><input type="number" step="any" name="households" placeholder="500" required></label>
+                            <label><span>Median Income</span><input type="number" step="any" name="median_income" placeholder="3.2" required></label>
+                        </div>
+
+                        <label class="fullwidth"><span>Proximity to Ocean</span>
+                            <select name="ocean_proximity" required>
+                                    <option value="INLAND">Inland</option>
+                                    <option value="NEAR OCEAN">Near Ocean</option>
+                                    <option value="NEAR BAY">Near Bay</option>
+                                    <option value="<1H OCEAN">Less than 1H Ocean</option>
+                                    <option value="ISLAND">Island</option>
+                            </select>
+                        </label>
+
+                        <div class="actions">
+                            <button class="btn primary large" type="submit">Predict Price</button>
+                            <button class="btn ghost" type="reset">Reset</button>
+                        </div>
+                        <p class="small muted" style="margin-top:10px">Tip: Use realistic values for best estimates. Median income is in tens of thousands.</p>
+                    </form>
+
+                    <aside class="right">
+                        {% if prediction_text %}
+                            <div class="result-card big" role="status" aria-live="polite">
+                                <h2>Estimated Price</h2>
+                                <p class="price">{{ prediction_text }}</p>
+                                <p class="muted small">This estimate is model-based — not an appraisal.</p>
+                            </div>
+                        {% else %}
+                            <div class="result-card big placeholder">
+                                <h2>Estimated Price</h2>
+                                <p class="price">—</p>
+                                <p class="muted small">Fill the form and click <strong>Predict Price</strong> to see an estimate.</p>
+                            </div>
+                        {% endif %}
+
+                        <div class="card-help muted small" style="margin-top:12px">Model trained on California housing dataset. For best results, provide realistic values and re-run.</div>
+                    </aside>
+                </div>
+
+        {% if prediction_text %}
+            <div class="result-card" role="status" aria-live="polite">
+                <h2>Estimated Price</h2>
+                <p class="price">{{ prediction_text }}</p>
+                <p class="muted small">This is a model estimate — use for guidance only.</p>
+            </div>
+        {% endif %}
+
+        <footer class="card-footer">
+            <small class="muted">Model trained on California housing data • Inputs required for best results</small>
+        </footer>
+    </section>
+</main>
+
+<script src="{{ url_for('static', filename='background.js') }}" defer></script>
+</body>
+</html>
